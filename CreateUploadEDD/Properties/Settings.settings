@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CreateUploadEDD.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LogPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\Logs</Value>
+    </Setting>
+    <Setting Name="DataSource" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DIVS704SQL1\MSSQLPUBLIC</Value>
+    </Setting>
+    <Setting Name="Catalog" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Endar_Cimp</Value>
+    </Setting>
+    <Setting Name="User" Type="System.String" Scope="User">
+      <Value Profile="(Default)">kateryna.sayenko</Value>
+    </Setting>
+    <Setting Name="PWD" Type="System.String" Scope="User">
+      <Value Profile="(Default)">deti9503</Value>
+    </Setting>
+    <Setting Name="TableName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="FolderToWriteScripts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\Scripts</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
