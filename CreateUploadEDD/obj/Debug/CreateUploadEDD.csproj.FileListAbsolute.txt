@@ -1,9 +1,0 @@
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\bin\Debug\CreateUploadEDD.exe
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\bin\Debug\CreateUploadEDD.pdb
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\obj\Debug\CreateUploadEDD.csprojResolveAssemblyReference.cache
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\obj\Debug\CreateUploadEDD.CreateUploadEDD_MAIN.resources
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\obj\Debug\CreateUploadEDD.Properties.Resources.resources
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\obj\Debug\CreateUploadEDD.csproj.GenerateResource.Cache
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\obj\Debug\CreateUploadEDD.exe
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\obj\Debug\CreateUploadEDD.pdb
-C:\Users\kateryna.sayenko\Documents\Visual Studio 2012\Projects\CreateUploadEDD\CreateUploadEDD\bin\Debug\CreateUploadEDD.exe.config
