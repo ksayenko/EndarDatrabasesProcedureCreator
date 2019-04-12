@@ -32,7 +32,8 @@ namespace CreateUploadEDD
         public DataAccess(string sDataSource, string sInitialCatalog,
             string sDatabaseUser, string sDatabasePassword)
         {
-            mylog = new LogHandler(Application.ProductName, "DataAccess costructor");
+            mylog = new LogHandler(System.Reflection.MethodBase.GetCurrentMethod().Name,
+                "DataAccess costructor");
 
 
             DataSource = sDataSource;
@@ -64,7 +65,8 @@ namespace CreateUploadEDD
             catch (Exception ex)
             {
                 bConnectToDatabase = false;
-                mylog.LogWarning("ERROR in DataAccess. Connection string " + constring + " " + ex.Message + Environment.NewLine + ex.ToString());
+                mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name +
+                    " Connection string " + constring + " " + ex.Message + Environment.NewLine + ex.ToString());
             }
 
             return bConnectToDatabase;
@@ -134,7 +136,7 @@ namespace CreateUploadEDD
         {
 
             string sql = "SELECT distinct ";
-            sql += " COL.TABLE_NAME AS [PROD_TABLE]";           
+            sql += " COL.TABLE_NAME AS [PROD_TABLE]";
             sql += " FROM INFORMATION_SCHEMA.COLUMNS AS COL";
             sql += " INNER JOIN INFORMATION_SCHEMA.TABLES AS TBL";
             sql += " ON	COL.TABLE_NAME = TBL.TABLE_NAME";
@@ -220,26 +222,26 @@ namespace CreateUploadEDD
                     }
                     catch (System.Data.SqlClient.SqlException ex)
                     {
-                        mylog.LogWarning("ERROR (SqlException) in Select ");
+                        mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name + "ERROR (SqlException) in Select ");
                         mylog.LogWarning(sql); ;
                         mylog.LogWarning(ex.ToString()); ;
-                     
+
                         nTry++;
                         mylog.LogWarning("End of " + nTry.ToString() + " try out of " + nMaxTry.ToString());
                         dataAdapter = new SqlDataAdapter();
                     }
                     catch (System.Data.OleDb.OleDbException ex)
                     {
-                        mylog.LogWarning("ERROR  (OleDbException) in Select ");
+                        mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name + "ERROR  (OleDbException) in Select ");
                         mylog.LogWarning(sql); ;
-                     
+
                         nTry++;
-                        mylog.LogWarning("End of " + nTry.ToString() + " try out of " + nMaxTry.ToString());
+                        mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name + "End of " + nTry.ToString() + " try out of " + nMaxTry.ToString());
                         dataAdapter = new SqlDataAdapter();
                     }
                     catch (Exception ex)
                     {
-                        mylog.LogWarning("ERROR in Select " + sql + " " + ex.Message + Environment.NewLine + ex.ToString());
+                        mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name + "ERROR in Select " + sql + " " + ex.Message + Environment.NewLine + ex.ToString());
                         nTry++;
                         mylog.LogWarning("End of " + nTry.ToString() + " try out of " + nMaxTry.ToString());
                         dataAdapter = new SqlDataAdapter();
@@ -248,11 +250,13 @@ namespace CreateUploadEDD
             }
             catch (System.Data.SqlClient.SqlException ex)
             {
-                mylog.LogWarning("ERROR in Select (SqlException) " + sql + " " + ex.Message + Environment.NewLine + ex.ToString());
+                mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name
+                    + "ERROR in Select (SqlException) " + sql + " " + ex.Message + Environment.NewLine + ex.ToString());
             }
             catch (Exception ex)
             {
-                mylog.LogWarning("ERROR in Select " + sql + " " + ex.Message + Environment.NewLine + ex.ToString());
+                mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name
+                    + "ERROR in Select " + sql + " " + ex.Message + Environment.NewLine + ex.ToString());
             }
 
             CloseConnection();
@@ -290,7 +294,7 @@ namespace CreateUploadEDD
             }
             catch (Exception ex)
             {
-                mylog.LogWarning("ERROR in Dispose " + ex.Message + " \\n" + ex.ToString());
+                mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name + ex.Message + " \\n" + ex.ToString());
             }
         }
 
@@ -320,7 +324,8 @@ namespace CreateUploadEDD
                     }
                     catch (System.Data.SqlClient.SqlException ex)
                     {
-                        mylog.LogWarning("ERROR in DataAccess.Execute (System.Data.SqlClient.SqlException ex) " + ex.Message + " " + ex.ToString() + " " + " SQLStatement: " + sSql);
+                        mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name +
+                            "ERROR in DataAccess.Execute (System.Data.SqlClient.SqlException ex) " + ex.Message + " " + ex.ToString() + " " + " SQLStatement: " + sSql);
                         nTry++;
                         mylog.LogWarning("End of " + nTry.ToString() + " try out of " + nMaxTry.ToString());
                         queryCommand = null;
@@ -328,7 +333,8 @@ namespace CreateUploadEDD
                     }
                     catch (Exception ex)
                     {
-                        mylog.LogWarning("ERROR in DataAccess.Execute " + ex.Message + " " + ex.ToString() + " " + " SQLStatement: " + sSql);
+                        mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name +
+"ERROR in DataAccess.Execute " + ex.Message + " " + ex.ToString() + " " + " SQLStatement: " + sSql);
                         nTry++;
                         mylog.LogWarning("End of " + nTry.ToString() + " try out of " + nMaxTry.ToString());
                         queryCommand = null;
@@ -339,7 +345,7 @@ namespace CreateUploadEDD
             }
             catch (Exception ex)
             {
-                mylog.LogWarning("ERROR in DataAccess.Execute " + ex.Message + " " + ex.ToString() + " " + " SQLStatement: " + sSql);
+                mylog.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name + "ERROR in DataAccess.Execute " + ex.Message + " " + ex.ToString() + " " + " SQLStatement: " + sSql);
             }
 
             CloseConnection();
@@ -583,7 +589,7 @@ namespace CreateUploadEDD
                 this.InitialCatalog = database;
             }
 
-            this.ConnectToAnotherDatabase(database);          
+            this.ConnectToAnotherDatabase(database);
 
         }
 
@@ -605,6 +611,25 @@ namespace CreateUploadEDD
         {
             ArrayList list = new ArrayList();
             DataTable dt = Get_AllDatabases();
+            if (dt != null && dt.Rows.Count > 0)
+                foreach (DataRow r in dt.Rows)
+                    list.Add(r[0].ToString());
+
+            return list;
+        }
+
+        public DataTable Get_EndarDatabases()
+        {
+            CheckConnectionAndReconnect("master");
+
+            string sql = "select name from sys.databases where name like '%endar%' order by 1";
+            return Select(sql, "TableStructure");
+        }
+
+        public ArrayList ListEndarDatabases()
+        {
+            ArrayList list = new ArrayList();
+            DataTable dt = Get_EndarDatabases();
             if (dt != null && dt.Rows.Count > 0)
                 foreach (DataRow r in dt.Rows)
                     list.Add(r[0].ToString());

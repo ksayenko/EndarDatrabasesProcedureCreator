@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace CreateUploadEDD
 {
@@ -44,17 +46,67 @@ namespace CreateUploadEDD
         {
             InitializeComponent();
             InitScripts();
+            string methodname = MethodBase.GetCurrentMethod().Name;
 
-            lh = new LogHandler("CreateUploadEDD_MAIN", "Constructor");
-
+            lh = new LogHandler(Application.ProductName,
+              this.GetType().Name + methodname);
+            setTableLayout();
 
             DownloadProperties();
-            SetRadiobutton();
-
             da = new DataAccess(ds, catalog, user, pwd);
             textBox1.Text = path;
 
             PopulateCombobox();
+            PopulateListBox();
+        }
+
+        private void setTableLayout()
+        {
+            string methodname = MethodBase.GetCurrentMethod().Name;
+
+            tableLayoutPanel1.SetCellPosition(button1,
+                new TableLayoutPanelCellPosition(1, 1));
+            tableLayoutPanel1.SetCellPosition(lbdb,
+              new TableLayoutPanelCellPosition(0, 0));
+            tableLayoutPanel1.SetCellPosition(button2,
+              new TableLayoutPanelCellPosition(0, 2));
+            tableLayoutPanel1.SetCellPosition(textBox1,
+              new TableLayoutPanelCellPosition(1, 2));
+            tableLayoutPanel1.SetRowSpan(lbdb, 2);
+        }
+
+        private void PopulateListBox()
+        {
+            ArrayList al = da.ListEndarDatabases();
+            lbdb.BeginUpdate();
+            lbdb.Items.Clear();
+            foreach (string s in al)
+            {
+                lbdb.Items.Add(s);
+            }
+            // Allow the ListBox to repaint and display the new items.
+            if (catalog != "") lbdb.SelectedItem = catalog;
+            lbdb.EndUpdate();
+
+        }
+        private void PopulateCombobox()
+        {
+            cbTables.Items.Clear();
+            DataTable dt = da.Edd_Process_Tables();
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                String temp;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    temp = dr[0].ToString();
+                    cbTables.Items.Add(temp);
+                }
+
+                if (tablename != "")
+                    cbTables.SelectedItem = tablename;
+            }
+
+
         }
 
         public void InitScripts()
@@ -122,6 +174,7 @@ namespace CreateUploadEDD
 
             trigger = ts.GetLastUpdateTrigger();
             proc_all = ts.GetRoutineUploadAll();
+         
             //proc_all;
             //grant_perm;
 
@@ -143,26 +196,7 @@ namespace CreateUploadEDD
         //    }
         //}
 
-
-        private void PopulateCombobox()
-        {
-            cbTables.Items.Clear();
-            DataTable dt = da.Edd_Process_Tables();
-            if (dt != null && dt.Rows.Count > 0)
-            {
-                String temp;
-                foreach (DataRow dr in dt.Rows)
-                {
-                    temp = dr[0].ToString();
-                    cbTables.Items.Add(temp);
-                }
-
-                if (tablename != "")
-                    cbTables.SelectedItem = tablename;
-            }
-
-
-        }
+        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -174,11 +208,16 @@ namespace CreateUploadEDD
             WriteFileFromArrayList(oldsp, catalog + "_old_edd_upload", "");
             WriteFileFromArrayList(trigger, catalog + "_last_update_", "trigger");
             WriteFileFromArrayList(proc_all, catalog + "_edd_upload_", "all");
+            WriteFileFromArrayList(grant_perm, catalog + "_edd_upload_", "all");
 
         }
 
         private void WriteFileFromArrayList(ArrayList List,string prefix, string end)
         {
+
+            if (List == null)
+                return;
+            try{
             if (prefix != "")
                 prefix += "_";
             if (end != "")
@@ -201,10 +240,15 @@ namespace CreateUploadEDD
                 sw.WriteLine(line);
             }
             sw.Close();
+            }catch(Exception ex)
+            {
+                lh.LogWarning(System.Reflection.MethodBase.GetCurrentMethod().Name+" " + ex.ToString());
+            }
         }
 
         private void CreateUploadEDD_MAIN_Load(object sender, EventArgs e)
         {
+            setTableLayout();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -221,23 +265,20 @@ namespace CreateUploadEDD
 
         private void SetCatalog()
         {
-            if (rbEnDAR.Checked)
-                catalog = rbEnDAR.Text;
-            else
-                catalog = rbEnDARCIMP.Text;
+            if (lbdb.SelectedItem == null)
+                return;
+            catalog = lbdb.SelectedItem.ToString();
+                   
             da = new DataAccess(ds, catalog, user, pwd);
+            PopulateCombobox();
         }
-        private void SetRadiobutton()
+        
+        private void rb_CheckedChanged(object sender, EventArgs e)
         {
-            if (catalog.ToLower().EndsWith("cimp"))
-            {
-                rbEnDARCIMP.Checked = true;
-            }
-            else
-                rbEnDAR.Checked = true;
+            ChangeDatabase();
         }
 
-        private void rb_CheckedChanged(object sender, EventArgs e)
+        private void ChangeDatabase()
         {
             SetCatalog();
             Properties.Settings.Default.Catalog = catalog;
@@ -275,6 +316,16 @@ namespace CreateUploadEDD
                 Properties.Settings.Default.Save();
             }
 
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lbdb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ChangeDatabase();
         }
 
     }

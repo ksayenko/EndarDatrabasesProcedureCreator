@@ -9,8 +9,8 @@ namespace CreateUploadEDD
 {
     public class LogHandler
     {
-        private string logFile = "CreateUploadEDD_log.txt";
-        private readonly string LOG_NAME = "CreateUploadEDD_log";
+        private string logFile = "log.txt";
+        private readonly string LOG_NAME = "log";
         string path;
         DirectoryInfo dir;
 
@@ -24,6 +24,8 @@ namespace CreateUploadEDD
         {  
             try
             {
+                LOG_NAME = Application.ProductName;
+                logFile = Application.ProductName + "_log.txt";
                 path = Properties.Settings.Default.LogPath.Trim();
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
@@ -37,7 +39,7 @@ namespace CreateUploadEDD
             dir = new DirectoryInfo(path);
             if (sn != "")
             {
-                LogWarning("Start " + sn + mn);
+                LogWarning("Start " + sn + " " + mn);
             }
 
         }
