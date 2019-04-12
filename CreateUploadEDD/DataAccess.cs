@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows.Forms;
+using System.Collections;
 
 namespace CreateUploadEDD
 {
@@ -16,16 +18,37 @@ namespace CreateUploadEDD
         LogHandler mylog;
         string constring;
 
+        public string DataSource;
+        public string InitialCatalog;
+        public string DatabaseUser;
+        public string DatabasePassword;
+
         public bool IsLogging;
 
         //private xmlDataset As DataSet
         //private Const cCONFIGFILE As string = "Settings.xml"
 
 
-        public DataAccess(string Data_Source, string InitialCatalog, string DatabaseUser, string DatabasePassword)
+        public DataAccess(string sDataSource, string sInitialCatalog,
+            string sDatabaseUser, string sDatabasePassword)
         {
-            mylog = new LogHandler("CreateUploadEDD", "DataAccess costructor");
-            constring = "Data Source=" + Data_Source + ";";
+            mylog = new LogHandler(Application.ProductName, "DataAccess costructor");
+
+
+            DataSource = sDataSource;
+            InitialCatalog = sInitialCatalog;
+            DatabaseUser = sDatabaseUser;
+            DatabasePassword = sDatabasePassword;
+
+            ConnectToDatabase();
+        }
+
+
+
+        public bool ConnectToDatabase()
+        {
+            bool bConnectToDatabase = true;
+            constring = "Data Source=" + DataSource + ";";
             constring += "Initial Catalog=" + InitialCatalog + ";";
             constring += "User=" + DatabaseUser + ";";
             constring += "Password=" + DatabasePassword + ";";
@@ -40,11 +63,15 @@ namespace CreateUploadEDD
             }
             catch (Exception ex)
             {
+                bConnectToDatabase = false;
                 mylog.LogWarning("ERROR in DataAccess. Connection string " + constring + " " + ex.Message + Environment.NewLine + ex.ToString());
             }
 
-
+            return bConnectToDatabase;
         }
+
+
+
 
 
         public DataTable GetExistentSP(string name)
@@ -547,6 +574,42 @@ namespace CreateUploadEDD
             dt = null; ;
 
             return true;
+        }
+
+        private void CheckConnectionAndReconnect(string database)
+        {
+            if (this.InitialCatalog != database)
+            {
+                this.InitialCatalog = database;
+            }
+
+            this.ConnectToAnotherDatabase(database);          
+
+        }
+
+        public bool ConnectToAnotherDatabase(string sInitialCatalog)
+        {
+            InitialCatalog = sInitialCatalog;
+            return ConnectToDatabase();
+        }
+
+        public DataTable Get_AllDatabases()
+        {
+            CheckConnectionAndReconnect("master");
+
+            string sql = "select name from sys.databases order by 1";
+            return Select(sql, "TableStructure");
+        }
+
+        public ArrayList ListAllDatabases()
+        {
+            ArrayList list = new ArrayList();
+            DataTable dt = Get_AllDatabases();
+            if (dt != null && dt.Rows.Count > 0)
+                foreach (DataRow r in dt.Rows)
+                    list.Add(r[0].ToString());
+
+            return list;
         }
 
 
